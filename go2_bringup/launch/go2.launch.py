@@ -39,53 +39,53 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 
 
 def generate_launch_description():
-  lidar = LaunchConfiguration('lidar')
-  realsense = LaunchConfiguration('realsense')
+    lidar = LaunchConfiguration('lidar')
+    realsense = LaunchConfiguration('realsense')
 
-  declare_lidar_cmd = DeclareLaunchArgument(
+    declare_lidar_cmd = DeclareLaunchArgument(
     'lidar',
     default_value='true',
     description='Launch hesai lidar driver'
-  )
+    )
 
-  declare_realsense_cmd = DeclareLaunchArgument(
+    declare_realsense_cmd = DeclareLaunchArgument(
     'realsense',
     default_value='true',
     description='Launch realsense driver'
-  )
+    )
 
-  robot_description_cmd = IncludeLaunchDescription(
+    robot_description_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([os.path.join(
-      get_package_share_directory('go2_description'),
-      'launch/'), 'robot.launch.py'])
-  )
+        get_package_share_directory('go2_description'),
+        'launch/'), 'robot.launch.py'])
+    )
 
-  driver_cmd = IncludeLaunchDescription(
+    driver_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([os.path.join(
-      get_package_share_directory('go2_driver'),
-      'launch/'), 'go2_driver.launch.py'])
-  )
+        get_package_share_directory('go2_driver'),
+        'launch/'), 'go2_driver.launch.py'])
+    )
 
-  lidar_cmd = IncludeLaunchDescription(
+    lidar_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('hesai_ros_driver'),
             'launch/'), 'start.py']),
         condition=IfCondition(PythonExpression([lidar]))
-  )
+    )
 
-  realsense_cmd = IncludeLaunchDescription(
+    realsense_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('realsense2_camera'),
             'launch/'), 'rs_launch.py']),
         condition=IfCondition(PythonExpression([realsense]))
-  )
+    )
 
-  ld = LaunchDescription()
-  ld.add_action(declare_lidar_cmd)
-  ld.add_action(declare_realsense_cmd)
-  ld.add_action(robot_description_cmd)
-  ld.add_action(driver_cmd)
-  ld.add_action(lidar_cmd)
-  ld.add_action(realsense_cmd)
+    ld = LaunchDescription()
+    ld.add_action(declare_lidar_cmd)
+    ld.add_action(declare_realsense_cmd)
+    ld.add_action(robot_description_cmd)
+    ld.add_action(driver_cmd)
+    ld.add_action(lidar_cmd)
+    ld.add_action(realsense_cmd)
 
-  return ld
+    return ld
