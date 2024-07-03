@@ -38,9 +38,12 @@ Go2Driver::Go2Driver(
 : Node("go2_driver", options),
   tf_broadcaster_(this)
 {
+  rclcpp::QoS qos_profile(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
+  qos_profile.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
+
   pointcloud_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>("pointcloud", 10);
   joint_state_pub_ = create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);
-  odom_pub_ = create_publisher<nav_msgs::msg::Odometry>("odom", 10);
+  odom_pub_ = create_publisher<nav_msgs::msg::Odometry>("odom", qos_profile);
   imu_pub_ = create_publisher<unitree_go::msg::IMUState>("imu", 10);
   request_pub_ = create_publisher<unitree_api::msg::Request>("api/sport/request", 10);
 
