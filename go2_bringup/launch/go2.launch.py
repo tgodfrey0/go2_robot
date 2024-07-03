@@ -43,27 +43,27 @@ def generate_launch_description():
     realsense = LaunchConfiguration('realsense')
 
     declare_lidar_cmd = DeclareLaunchArgument(
-    'lidar',
-    default_value='true',
-    description='Launch hesai lidar driver'
+        'lidar',
+        default_value='true',
+        description='Launch hesai lidar driver'
     )
 
     declare_realsense_cmd = DeclareLaunchArgument(
-    'realsense',
-    default_value='true',
-    description='Launch realsense driver'
+        'realsense',
+        default_value='true',
+        description='Launch realsense driver'
     )
 
     robot_description_cmd = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource([os.path.join(
-        get_package_share_directory('go2_description'),
-        'launch/'), 'robot.launch.py'])
+        PythonLaunchDescriptionSource([os.path.join(
+            get_package_share_directory('go2_description'),
+            'launch/'), 'robot.launch.py'])
     )
 
     driver_cmd = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource([os.path.join(
-        get_package_share_directory('go2_driver'),
-        'launch/'), 'go2_driver.launch.py'])
+        PythonLaunchDescriptionSource([os.path.join(
+            get_package_share_directory('go2_driver'),
+            'launch/'), 'go2_driver.launch.py'])
     )
 
     lidar_cmd = IncludeLaunchDescription(
