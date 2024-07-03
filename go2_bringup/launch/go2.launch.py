@@ -41,17 +41,24 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 def generate_launch_description():
     lidar = LaunchConfiguration('lidar')
     realsense = LaunchConfiguration('realsense')
+    rviz = LaunchConfiguration('rviz')
 
     declare_lidar_cmd = DeclareLaunchArgument(
         'lidar',
-        default_value='true',
+        default_value='False',
         description='Launch hesai lidar driver'
     )
 
     declare_realsense_cmd = DeclareLaunchArgument(
         'realsense',
-        default_value='true',
+        default_value='False',
         description='Launch realsense driver'
+    )
+
+    declare_rviz_cmd = DeclareLaunchArgument(
+        'rviz',
+        default_value='False',
+        description='Launch rviz'
     )
 
     robot_description_cmd = IncludeLaunchDescription(
@@ -80,12 +87,21 @@ def generate_launch_description():
         condition=IfCondition(PythonExpression([realsense]))
     )
 
+    rviz_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(
+            get_package_share_directory('go2_rviz'),
+            'launch/'), 'rviz.launch.py']),
+        condition=IfCondition(PythonExpression([rviz]))
+    )
+
     ld = LaunchDescription()
     ld.add_action(declare_lidar_cmd)
     ld.add_action(declare_realsense_cmd)
+    ld.add_action(declare_rviz_cmd)
     ld.add_action(robot_description_cmd)
-    ld.add_action(driver_cmd)
     ld.add_action(lidar_cmd)
     ld.add_action(realsense_cmd)
+    ld.add_action(driver_cmd)
+    ld.add_action(rviz_cmd)
 
     return ld
