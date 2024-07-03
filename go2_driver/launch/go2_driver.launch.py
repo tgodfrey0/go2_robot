@@ -40,7 +40,7 @@ def generate_launch_description():
     composable_node = ComposableNode(
         package='go2_driver',
         plugin='go2_driver::Go2Driver',
-        name='test_node',
+        name='go2_driver',
         namespace='',
 
     )

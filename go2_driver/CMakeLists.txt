@@ -15,6 +15,7 @@ find_package(nav_msgs REQUIRED)
 find_package(unitree_go REQUIRED)
 find_package(unitree_api REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(go2_interfaces REQUIRED)
 
 set(dependencies
   rclcpp
@@ -26,6 +27,7 @@ set(dependencies
   unitree_go
   unitree_api
   tf2_ros
+  go2_interfaces
 )
 
 include_directories(include)
