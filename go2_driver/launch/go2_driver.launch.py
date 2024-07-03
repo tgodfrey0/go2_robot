@@ -29,7 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from launch import LaunchDescription
-from launch_ros.actions import ComposableNodeContainer
+from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
 
 
@@ -55,7 +55,21 @@ def generate_launch_description():
         output='screen',
     )
 
+    pointclod_to_laserscan_cmd = Node(
+        package='pointcloud_to_laserscan',
+        executable='pointcloud_to_laserscan_node',
+        name='pointcloud_to_laserscan',
+        namespace='',
+        output='screen',
+        remappings=[('/cloud_in', '/pointcloud')],
+        parameters=[{
+                'target_frame': 'radar',
+                'transform_tolerance': 0.01,
+            }],
+    )
+
     ld = LaunchDescription()
     ld.add_action(container)
+    ld.add_action(pointclod_to_laserscan_cmd)
 
     return ld
