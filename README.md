@@ -4,10 +4,6 @@
 <img width="1280" height="420" src="https://github.com/IntelligentRoboticsLabs/go2_robot/assets/44479765/da616d77-cf4d-4acf-af2f-adc99f4f72d7)" alt='Go2 point cloud'>
 </p>
 
-
-
-
-
 [![License](https://img.shields.io/badge/license-BSD--3-yellow.svg)](https://opensource.org/licenses/BSD-3-Clause)
 ![distro](https://img.shields.io/badge/Ubuntu%2022-Jammy%20Jellyfish-green)
 ![distro](https://img.shields.io/badge/ROS2-Humble-blue)
@@ -195,6 +191,15 @@ In the future, work in progress.
 
 ## NAVIGATION
 In the future, work in progress.
+
+## Demos
+### Robot description
+
+[go2_tf.webm](https://github.com/IntelligentRoboticsLabs/go2_robot/assets/44479765/b019e6fc-875f-4870-a510-afa6e1353e08)
+
+### Robot PointCloud
+
+https://github.com/IntelligentRoboticsLabs/go2_robot/assets/44479765/c164840a-6857-4d95-a50e-023c5bb44edb
 
 ## Acknowledgment
 Thanks to [unitree](https://github.com/unitreerobotics/unitree_ros2) for providing the support and communication interfaces with the robot.
