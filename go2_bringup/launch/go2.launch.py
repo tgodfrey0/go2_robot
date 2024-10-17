@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import uuid
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -36,12 +37,16 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.actions import GroupAction
+from launch_ros.actions import PushRosNamespace
 
+ns = '_'.join((['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,48,8)][::-1])[3:6]) # Each robot's namespace is the last 3 octets of its MAC address
 
 def generate_launch_description():
     lidar = LaunchConfiguration('lidar')
     realsense = LaunchConfiguration('realsense')
     rviz = LaunchConfiguration('rviz')
+    mrs = LaunchConfiguration('mrs')
 
     declare_lidar_cmd = DeclareLaunchArgument(
         'lidar',
@@ -59,6 +64,12 @@ def generate_launch_description():
         'rviz',
         default_value='False',
         description='Launch rviz'
+    )
+    
+    declare_mrs_cmd = DeclareLaunchArgument(
+        'mrs',
+        default_value='False',
+        description='Launch with remapping for multi-robot system usage'
     )
 
     robot_description_cmd = IncludeLaunchDescription(
@@ -93,15 +104,47 @@ def generate_launch_description():
             'launch/'), 'rviz.launch.py']),
         condition=IfCondition(PythonExpression([rviz]))
     )
+    
+    # Remap the actions into a namespace if `mrs` is true
+    group_action = GroupAction(
+        actions=[
+            PushRosNamespace(ns),
+            robot_description_cmd,
+            lidar_cmd,
+            realsense_cmd,
+            driver_cmd,
+            rviz_cmd
+        ],
+        condition=IfCondition(mrs)
+    )
 
     ld = LaunchDescription()
     ld.add_action(declare_lidar_cmd)
     ld.add_action(declare_realsense_cmd)
     ld.add_action(declare_rviz_cmd)
-    ld.add_action(robot_description_cmd)
-    ld.add_action(lidar_cmd)
-    ld.add_action(realsense_cmd)
-    ld.add_action(driver_cmd)
-    ld.add_action(rviz_cmd)
+    ld.add_action(declare_mrs_cmd)
+    ld.add_action(group_action)
+
+    # Add individual actions if mrs is False
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
+        robot_description_cmd,
+        PythonExpression(['None'])
+    ))
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
+        lidar_cmd,
+        PythonExpression(['None'])
+    ))
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
+        realsense_cmd,
+        PythonExpression(['None'])
+    ))
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
+        driver_cmd,
+        PythonExpression(['None'])
+    ))
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
+        rviz_cmd,
+        PythonExpression(['None'])
+    ))
 
     return ld
