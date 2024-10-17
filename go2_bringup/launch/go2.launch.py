@@ -40,7 +40,7 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
 
-ns = '_'.join((['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,48,8)][::-1])[3:6]) # Each robot's namespace is the last 3 octets of its MAC address
+ns = f"go2_{'_'.join((['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,48,8)][::-1])[3:6])}" # Each robot's namespace is the last 3 octets of its MAC address
 
 def generate_launch_description():
     lidar = LaunchConfiguration('lidar')
