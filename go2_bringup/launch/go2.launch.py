@@ -126,25 +126,20 @@ def generate_launch_description():
     ld.add_action(group_action)
 
     # Add individual actions if mrs is False
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
-        robot_description_cmd,
-        PythonExpression(['None'])
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
+        robot_description_cmd
     ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
-        lidar_cmd,
-        PythonExpression(['None'])
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
+        lidar_cmd
     ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
-        realsense_cmd,
-        PythonExpression(['None'])
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
+        realsense_cmd
+        ))
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
+        driver_cmd
     ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
-        driver_cmd,
-        PythonExpression(['None'])
-    ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).if_else(
-        rviz_cmd,
-        PythonExpression(['None'])
+    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
+        rviz_cmd
     ))
 
     return ld
