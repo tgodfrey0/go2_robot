@@ -106,7 +106,7 @@ def generate_launch_description():
     )
     
     # Remap the actions into a namespace if `mrs` is true
-    group_action = GroupAction(
+    mrs_group = GroupAction(
         actions=[
             PushRosNamespace(ns),
             robot_description_cmd,
@@ -118,28 +118,31 @@ def generate_launch_description():
         condition=IfCondition(mrs)
     )
 
+    # Actions for non-MRS mode
+    non_mrs_actions = [
+        robot_description_cmd,
+        lidar_cmd,
+        realsense_cmd,
+        driver_cmd,
+        rviz_cmd
+    ]
+
     ld = LaunchDescription()
+    
+    # Add argument declarations
     ld.add_action(declare_lidar_cmd)
     ld.add_action(declare_realsense_cmd)
     ld.add_action(declare_rviz_cmd)
     ld.add_action(declare_mrs_cmd)
-    ld.add_action(group_action)
 
-    # Add individual actions if mrs is False
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
-        robot_description_cmd
-    ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
-        lidar_cmd
-    ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
-        realsense_cmd
+    # Add MRS group action
+    ld.add_action(mrs_group)
+
+    # Add non-MRS actions with conditions
+    for action in non_mrs_actions:
+        ld.add_action(GroupAction(
+            [action],
+            condition=IfCondition(PythonExpression(['not ', mrs]))
         ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
-        driver_cmd
-    ))
-    ld.add_action(IfCondition(PythonExpression(['not ', mrs])).then(
-        rviz_cmd
-    ))
 
     return ld
