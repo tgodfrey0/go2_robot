@@ -58,12 +58,12 @@ RUN mv unitree_ros2/cyclonedds_ws /
 RUN rm -rf /unitree_ros2
 
 WORKDIR /cyclonedds_ws/src
-RUN git clone https://github.com/ros2/rmw_cyclonedds -b foxy
+RUN git clone https://github.com/ros2/rmw_cyclonedds -b ${ROS_DISTRO}
 RUN git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x 
 
 WORKDIR /cyclonedds_ws
 RUN colcon build --packages-select cyclonedds \
-  && source /opt/ros/foxy/setup.bash \
+  && source /opt/ros/${ROS_DISTRO}/setup.bash \
   && colcon build
 
 WORKDIR /
