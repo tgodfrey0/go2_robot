@@ -24,6 +24,8 @@ The SDK can now be run and the robot can be used.
 ros2 launch go2_bringup go2.launch.py
 ```
 
+If using the Docker container, it is easy to change the selected ROS2 distribution. When building the container, simply include the name of the distribution after the interface name, e.g. `./build.sh eth0 humble`.
+
 # Running without Docker
 
 It is also easy to run this without using a Docker container. We need to install `cyclonedds 0.10` and configure it with the correct interface. 
@@ -67,3 +69,5 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterfac
 To use this script, simply run `source ~/ros2_rmw_setup.sh`.
 
 After this, the correct version of CycloneDDS should be running and configured, and you should be communicating with the Go2 ROS2 instance. Again, this can be verified using `ros2 topic list`. 
+
+_This document was written by Toby Godfrey (t.godfrey \~at\~ soton.ac.uk)_
