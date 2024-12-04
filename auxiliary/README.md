@@ -22,14 +22,14 @@ In the output, find the area titled "Supported interface modes" and ensure that 
 
 ```bash
 Supported interface modes:
-		 * IBSS
-		 * managed
-		 * AP
-		 * AP/VLAN
-		 * monitor
-		 * P2P-client
-		 * P2P-GO
-		 * P2P-device
+  * IBSS
+  * managed
+  * AP
+  * AP/VLAN
+  * monitor
+  * P2P-client
+  * P2P-GO
+  * P2P-device
 ```
 
 Then we can use `nmcli` to setup the hotspot.

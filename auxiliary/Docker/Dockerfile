@@ -24,7 +24,6 @@ SHELL ["/bin/bash", "-c"]
 ########################################
 # Install packages #
 ########################################
-WORKDIR /ros2_ws
 RUN apt-get update -y 
 RUN apt-get upgrade -y 
 RUN apt-get install -y \
@@ -76,6 +75,7 @@ source /opt/ros/${ROS_DISTRO}/setup.bash
 source /cyclonedds_ws/install/setup.bash
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterface name="${INTERFACE}" priority="default" multicast="default" /></Interfaces></General></Domain></CycloneDDS>'
+source /go2_ws/install/setup.bash
 SCRIPT
 EOF
 RUN echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
@@ -83,8 +83,8 @@ RUN echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
 ########################################
 # Setup Go2 repos #
 ########################################
-RUN mkdir -p /ros2_ws/src
-WORKDIR /ros2_ws/src
+RUN mkdir -p /go2_ws/src
+WORKDIR /go2_ws/src
 RUN git clone https://github.com/tgodfrey0/go2_robot.git
 RUN git clone https://github.com/nlohmann/json.git
 RUN git clone --recurse-submodules https://github.com/HesaiTechnology/HesaiLidar_ROS_2.0.git
@@ -94,7 +94,7 @@ RUN rm -rf json
 ########################################
 # Build packages #
 ########################################
-WORKDIR /ros2_ws
+WORKDIR /go2_ws
 RUN . /opt/ros/${ROS_DISTRO}/setup.bash \
   # && . install/setup.bash \
   && rosdep update \
