@@ -1,0 +1,15 @@
+[Unit]
+Description=Start Go2 SDK ROS2 Package
+After=network.target
+
+[Service]
+Type=simple
+User=unitree
+WorkingDirectory=/home/unitree/ros2_ws
+ExecStart=/bin/bash -c 'source /home/unitree/.ros2_env && source install/setup.bash && ros2 launch go2_bringup go2.launch.py'
+Restart=on-failure
+TimeoutStartSec=10
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
