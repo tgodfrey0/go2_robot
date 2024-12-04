@@ -101,6 +101,8 @@ ros2 launch go2_bringup go2.launch.py
 
 Now you should be able to connect to the Go2's network on your PC, open a terminal and run `ros2 topic list` and see the topics from this package, e.g. `/cmd_vel`.
 
+If all of the above instructions were followed, and the below section on using `systemctl` has been completed, the robot can be used without needing to SSH into it. Simply power up the robot and leave it for a minute or so. Then connect to the WiFi hotspot and start the container. You should see all of the topics from this SDK listed and can begin working with the Go2 over WiFi with ROS2.
+
 ## Setting up the `systemctl` service
 
 We can use systemctl to start this package automatically.
