@@ -42,21 +42,13 @@ An example command would be `sudo nmcli dev wifi hotspot ifname wlan0 ssid go2 p
 
 This will create a WiFi hotspot that other computers can connect to.
 
-To make the hotspot automatically start when the robot is turned on, we must edit the configuration file.
-
-Find the configuration file by running 
+To make the hotspot automatically start when the robot is turned on, we must run
 
 ```bash
-sudo ls /etc/NetworkManager/system-connections/
+sudo nmcli conn modify Hotspot connection.autoconnect true
 ```
 
-Then open it in an editor. 
-
-```bash
-sudo nano /etc/NetworkManager/system-connections/<CONFIG FILE>
-```
-
-Then find the line that says `autoconnect=false` and change it to `autoconnect=true`. Now the hotspot will start when the Go2 turns on.
+Now the hotspot will start when the Go2 turns on.
 
 ### `CycloneDDS` Configuration
 
