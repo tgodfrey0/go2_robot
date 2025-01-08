@@ -32,19 +32,39 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+from launch.actions import (
+    DeclareLaunchArgument,
+)
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    # Declare the namespace argument
+    namespace_arg = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the RViz2 node",
+    )
 
-    return LaunchDescription([
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            output='screen',
-            arguments=['-d',
-                       os.path.join(get_package_share_directory('go2_rviz'),
-                                    'config', 'go2_rviz.rviz')]
-        )
-    ])
+    # Get the namespace configuration
+    namespace = LaunchConfiguration("namespace")
+
+    return LaunchDescription(
+        [
+            Node(
+                package="rviz2",
+                executable="rviz2",
+                name="rviz2",
+                output="screen",
+                arguments=[
+                    "-d",
+                    os.path.join(
+                        get_package_share_directory("go2_rviz"),
+                        "config",
+                        "go2_rviz.rviz",
+                    ),
+                ],
+            )
+        ]
+    )
