@@ -14,7 +14,7 @@ ENV ROS_DISTRO=${ROS_DISTRO}
 ENV ROS_VERSION=2
 ENV ROS_PYTHON_VERSION=3
 ENV ROS_PACKAGE_PATH=/opt/ros/${ROS_DISTRO}/share
-ENV DISPLAY="unix:0"  
+ENV DISPLAY="unix:0"
 
 ########################################
 # Set the shell #
@@ -24,8 +24,8 @@ SHELL ["/bin/bash", "-c"]
 ########################################
 # Install packages #
 ########################################
-RUN apt-get update -y 
-RUN apt-get upgrade -y 
+RUN apt-get update -y
+RUN apt-get upgrade -y
 RUN apt-get install -y \
   ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
   ros-${ROS_DISTRO}-realsense2-camera \
@@ -47,19 +47,20 @@ RUN apt-get install -y \
   iproute2 \
   iputils-ping \
   nano \
-  ninja-build
+  ninja-build \
+  tmux
 
 ########################################
 # Setup CycloneDDS file #
 ########################################
 WORKDIR /
 RUN git clone https://github.com/unitreerobotics/unitree_ros2
-RUN mv unitree_ros2/cyclonedds_ws / 
+RUN mv unitree_ros2/cyclonedds_ws /
 RUN rm -rf /unitree_ros2
 
 WORKDIR /cyclonedds_ws/src
 RUN git clone https://github.com/ros2/rmw_cyclonedds -b ${ROS_DISTRO}
-RUN git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x 
+RUN git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x
 
 WORKDIR /cyclonedds_ws
 RUN colcon build --packages-select cyclonedds \
@@ -75,10 +76,11 @@ source /opt/ros/${ROS_DISTRO}/setup.bash
 source /cyclonedds_ws/install/setup.bash
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterface name="${INTERFACE}" priority="default" multicast="default" /></Interfaces></General></Domain></CycloneDDS>'
-source /go2_ws/install/setup.bash
+# source /go2_ws/install/setup.bash
+echo "Sourcing of go2_ws is DISABLED"
 SCRIPT
 EOF
-RUN echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
+# RUN echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
 
 ########################################
 # Setup Go2 repos #
@@ -100,10 +102,17 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.bash \
   && rosdep update \
   && rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros \
   && colcon build --symlink-install \
-  && . install/setup.bash 
+  && . install/setup.bash
 
 ########################################
 # Set entrypoint and default command #
 ########################################
-ENTRYPOINT [ "/ros_entrypoint.sh" ]
-CMD [ "bash" ]
+COPY ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
+RUN chmod +x /ros_entrypoint_tmux.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/ros_entrypoint_tmux.sh"]
+CMD ["tmux", "attach-session", "-t", "ros2_session"]
+
+# ENTRYPOINT [ "/ros_entrypoint.sh" ]
+# CMD [ "bash" ]
