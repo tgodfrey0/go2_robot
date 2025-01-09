@@ -3,7 +3,7 @@ ARG ROS_DISTRO=foxy
 ########################################
 # Base image #
 ########################################
-FROM osrf/ros:${ROS_DISTRO}-desktop as base
+FROM osrf/ros:${ROS_DISTRO}-desktop AS base
 
 ARG INTERFACE
 
