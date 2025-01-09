@@ -95,6 +95,11 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.bash \
   && . install/setup.bash
 
 ########################################
+# Copy tmux configuration #
+########################################
+COPY tmux.conf /root/.tmux.conf
+
+########################################
 # Set entrypoint and default command #
 ########################################
 COPY _ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
