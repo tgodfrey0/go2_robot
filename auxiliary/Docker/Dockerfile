@@ -68,18 +68,8 @@ RUN colcon build --packages-select cyclonedds \
   && colcon build
 
 WORKDIR /
-RUN <<EOF
-cat > /ros2_rmw_setup.sh <<SCRIPT
-#!/bin/bash
-echo "This image was build for the interface ${INTERFACE}"
-source /opt/ros/${ROS_DISTRO}/setup.bash
-source /cyclonedds_ws/install/setup.bash
-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterface name="${INTERFACE}" priority="default" multicast="default" /></Interfaces></General></Domain></CycloneDDS>'
-# source /go2_ws/install/setup.bash
-echo "Sourcing of go2_ws is DISABLED"
-SCRIPT
-EOF
+COPY _ros2_rmw_setup.sh /ros2_rmw_setup.sh
+RUN chmod +x /ros2_rmw_setup.sh
 # RUN echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
 
 ########################################
@@ -107,12 +97,11 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.bash \
 ########################################
 # Set entrypoint and default command #
 ########################################
-COPY ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
+COPY _ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
 RUN chmod +x /ros_entrypoint_tmux.sh
 
 # Set the entrypoint
-ENTRYPOINT ["/ros_entrypoint_tmux.sh"]
-CMD ["tmux", "attach-session", "-t", "ros2_session"]
+CMD ["/ros_entrypoint_tmux.sh"]
 
 # ENTRYPOINT [ "/ros_entrypoint.sh" ]
 # CMD [ "bash" ]
