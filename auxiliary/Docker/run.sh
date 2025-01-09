@@ -1,12 +1,26 @@
 #!/bin/bash
 
-xhost +local:root
-docker run  -it \
-            -v /dev:/dev \
-            -v /home/$(whoami)/:/home/$(whoami)/ \
-            -v /tmp/.X11-unix:/tmp/.X11-unix \
-            --network="host" \
-            --privileged \
-            -w /home/$(whoami) \
-            ros2:foxy-go2
+CONTAINER_NAME="ros2_foxy_go2"
 
+xhost +local:root
+
+if [ ! "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
+    echo "Container does not exist! Creating..."
+    docker run -it \
+               --name $CONTAINER_NAME \
+               -v /dev:/dev \
+               -v /home/$(whoami)/:/home/$(whoami)/ \
+               -v /tmp/.X11-unix:/tmp/.X11-unix \
+               --network="host" \
+               --privileged \
+               -w /home/$(whoami) \
+               ros2:foxy-go2
+else
+    if [ ! "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
+        echo "Container is not running! Starting..."
+        docker start -i $CONTAINER_NAME
+    else
+        echo "Attaching to running container..."
+        docker attach $CONTAINER_NAME
+    fi
+fi
