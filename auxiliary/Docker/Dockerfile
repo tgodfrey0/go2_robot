@@ -1,12 +1,11 @@
 ARG ROS_DISTRO=foxy
 ARG DEBIAN_FRONTEND=noninteractive
+ARG INTERFACE
 
 ########################################
 # Base image #
 ########################################
 FROM osrf/ros:${ROS_DISTRO}-desktop AS base
-
-ARG INTERFACE
 
 ########################################
 # Environment variables #
@@ -16,6 +15,7 @@ ENV ROS_VERSION=2
 ENV ROS_PYTHON_VERSION=3
 ENV ROS_PACKAGE_PATH=/opt/ros/${ROS_DISTRO}/share
 ENV DISPLAY="unix:0"
+ENV CYCLONEDDS_INTERFACE=${INTERFACE}
 
 ########################################
 # Set the shell #
@@ -49,7 +49,8 @@ RUN apt-get install -y \
   iputils-ping \
   nano \
   ninja-build \
-  tmux
+  tmux \
+  xclip
 
 ########################################
 # Setup CycloneDDS file #
