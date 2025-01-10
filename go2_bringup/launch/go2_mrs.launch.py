@@ -1,6 +1,6 @@
 # BSD 3-Clause License
 
-# Copyright (c) 2024, Intelligent Robotics Lab
+# Copyright (c) 2024, TODO
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without
@@ -43,17 +43,16 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import PushRosNamespace
 
-ROS_NAMESPACE_PREFIX: str = (
-    "go2"  # Prefixed to the namespace, e.g. prefix_FF_FF_FF
+ROS_NAMESPACE_PREFIX: str = "go2"  # Prefixed to the namespace, e.g. prefix_FF_FF_FF
+ROS_NAMESPACE_SEPARATOR: str = (
+    "_"  # Splits the prefix and the octets, e.g. for _ the ns is prefix_XX_XX_XX
 )
-ROS_NAMESPACE_SEPARATOR: str = "_"  # Splits the prefix and the octets, e.g. for _ the ns is prefix_XX_XX_XX
-ROS_NAMESPACE = f"{ROS_NAMESPACE_PREFIX}{ROS_NAMESPACE_SEPARATOR}{ROS_NAMESPACE_SEPARATOR.join((['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,48,8)][::-1])[3:6])}"  # Each robot's namespace is the last 3 octets of its MAC address
+ROS_NAMESPACE = f"{ROS_NAMESPACE_PREFIX}{ROS_NAMESPACE_SEPARATOR}{ROS_NAMESPACE_SEPARATOR.join((['{:02x}'.format((uuid.getnode() >> i) & 0xFF) for i in range(0, 48, 8)][::-1])[3:6])}"  # Each robot's namespace is the last 3 octets of its MAC address
 
 
 def generate_launch_description():
     lidar = LaunchConfiguration("lidar")
     realsense = LaunchConfiguration("realsense")
-    rviz = LaunchConfiguration("rviz")
 
     declare_lidar_cmd = DeclareLaunchArgument(
         "lidar", default_value="False", description="Launch hesai lidar driver"
@@ -65,16 +64,10 @@ def generate_launch_description():
         description="Launch realsense driver",
     )
 
-    declare_rviz_cmd = DeclareLaunchArgument(
-        "rviz", default_value="False", description="Launch rviz"
-    )
-
     robot_description_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                os.path.join(
-                    get_package_share_directory("go2_description"), "launch/"
-                ),
+                os.path.join(get_package_share_directory("go2_description"), "launch/"),
                 "robot.launch.py",
             ]
         )
@@ -83,9 +76,7 @@ def generate_launch_description():
     driver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                os.path.join(
-                    get_package_share_directory("go2_driver"), "launch/"
-                ),
+                os.path.join(get_package_share_directory("go2_driver"), "launch/"),
                 "go2_driver.launch.py",
             ]
         )
@@ -94,9 +85,7 @@ def generate_launch_description():
     lidar_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                os.path.join(
-                    get_package_share_directory("hesai_ros_driver"), "launch/"
-                ),
+                os.path.join(get_package_share_directory("hesai_ros_driver"), "launch/"),
                 "start.py",
             ]
         ),
@@ -106,25 +95,11 @@ def generate_launch_description():
     realsense_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                os.path.join(
-                    get_package_share_directory("realsense2_camera"), "launch/"
-                ),
+                os.path.join(get_package_share_directory("realsense2_camera"), "launch/"),
                 "rs_launch.py",
             ]
         ),
         condition=IfCondition(PythonExpression([realsense])),
-    )
-
-    rviz_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory("go2_rviz"), "launch/"
-                ),
-                "rviz.launch.py",
-            ]
-        ),
-        condition=IfCondition(PythonExpression([rviz])),
     )
 
     # Remap the actions into a namespace
@@ -135,7 +110,6 @@ def generate_launch_description():
             lidar_cmd,
             realsense_cmd,
             driver_cmd,
-            rviz_cmd,
         ],
     )
 
@@ -144,7 +118,6 @@ def generate_launch_description():
     # Add argument declarations
     ld.add_action(declare_lidar_cmd)
     ld.add_action(declare_realsense_cmd)
-    ld.add_action(declare_rviz_cmd)
 
     # Add MRS group action
     ld.add_action(group)
