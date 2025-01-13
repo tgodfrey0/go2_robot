@@ -23,9 +23,14 @@ else
     build_command="docker build"
 fi
 
+IFACE=$1
+shift
+ROS_DISTRO=$1
+shift
+
 # Execute the build command with appropriate arguments
-if [ -z "$2" ]; then
-    $build_command --squash --build-arg INTERFACE=$1 --env DISPLAY=$DISPLAY -t ros2:foxy-go2 -f Dockerfile .
+if [ -z "$3" ]; then
+  $build_command --squash --build-arg INTERFACE=${IFACE} --build-arg ROS_DISTRO=${ROS_DISTRO} --env DISPLAY=$DISPLAY -t ros2:${ROS_DISTRO}-go2 -f Dockerfile .
 else
-    $build_command --squash --build-arg INTERFACE=$1 --build-arg ROS_DISTRO=$2 --env DISPLAY=$DISPLAY -t ros2:foxy-go2 -f Dockerfile .
+  echo "Usage: ./build.sh <IFACE> <DISTRO>"
 fi

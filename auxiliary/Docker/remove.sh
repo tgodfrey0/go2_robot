@@ -1,5 +1,8 @@
 #!/bin/bash
 
+ROS_DISTRO=$1
+shift
+
 # Function to check if podman is available and being used as docker
 is_podman() {
     if command -v docker &> /dev/null; then
@@ -24,10 +27,10 @@ else
 fi
 
 # Remove the container associated with the ROS distribution, if it exists
-$cmd rm -f ros2_foxy_go2 2>/dev/null
+$cmd rm -f ros2_${ROS_DISTRO}_go2 2>/dev/null
 
 # Remove the image associated with the ROS distribution, if it exists
-$cmd rmi -f localhost/ros2:foxy-go2 2>/dev/null
+$cmd rmi -f localhost/ros2:${ROS_DISTRO}-go2 2>/dev/null
 
 # Clean up dangling images (images not tagged and not referenced by any container)
 dangling_images=$($cmd images -f "dangling=true" -q)

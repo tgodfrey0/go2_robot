@@ -2,7 +2,7 @@
 
 ## Accessing the Go2 over WiFi
 
-If your WiFi interface is not attached through the `eth0` interface (e.g. a USB adapter), additional configuration is needed. 
+If your WiFi interface is not attached through the `eth0` interface (e.g. a USB adapter), additional configuration is needed.
 
 The internal topics are not published over WiFi. The topics from this package can be published over WiFi.
 
@@ -101,7 +101,7 @@ We can use systemctl to start this package automatically.
 
 Open the file `auxiliary/go2-sdk.service` and ensure that the username is correct, and the path to the package is correct. The `ExecStart` field is the command that is executed. Ensure that all paths and the `WorkingDirectory` are correct. The `~/.ros2_env` file is used to source the ROS2 installation and other necessary packages like `cyclonedds` automatically. The required variables can be found in your `~/.bashrc` file.
 
-Once the file has been formatted correctly, run the following commands to automatically start this at boot. 
+Once the file has been formatted correctly, run the following commands to automatically start this at boot.
 
 ```bash
 sudo ln -s /home/unitree/ros2_ws/src/go2_robot/auxiliary/go2-sdk.service /etc/systemd/system/go2-sdk.service # Make a link to the file in the systemd folder
@@ -118,20 +118,20 @@ sudo systemctl status ros2_package.service
 
 ## Running with Docker
 
-To make it easier to get started with this SDK on a Go2 robot, a comprehensive Dockerile was created. The container supports window forwarding allowing for the use of GUI-based tools like `rviz2`.
+To make it easier to get started with this SDK on a Go2 robot, a comprehensive Dockerile was created. The container supports X11 forwarding allowing for the use of GUI-based tools like `rviz2`.
 
 To build the Docker container, run
 
 ```bash
-./build.sh INTERFACE
+./build.sh INTERFACE DISTRO
 ```
 
-where `INTERFACE` is the network interface to which the robot is connected. For example, if the Go2 was connected over ethernet and the interface was `eth0`, one would run `./build eth0`.
+where `INTERFACE` is the network interface to which the robot is connected. For example, if the Go2 was connected over ethernet and the interface was `eth0`, one would run `./build eth0 foxy`.
 
 To run the container, simply run
 
 ```bash
-./run.sh
+./run.sh DISTRO
 ```
 
 You will now be in the container and should be able to see the topics from the robot. This can be verified by running `ros2 topic list`.
@@ -146,7 +146,7 @@ If using the Docker container, it is easy to change the selected ROS2 distributi
 
 ## Running without Docker
 
-It is also easy to run this without using a Docker container. We need to install `cyclonedds 0.10` and configure it with the correct interface. 
+It is also easy to run this without using a Docker container. We need to install `cyclonedds 0.10` and configure it with the correct interface.
 
 **Ensure that ROS2 has not been sourced yet.**
 
@@ -159,7 +159,7 @@ mv unitree_ros2/cyclonedds_ws ~/
 rm -rf ~/unitree_ros2
 cd ~/cyclonedds_ws/src
 git clone https://github.com/ros2/rmw_cyclonedds -b foxy
-git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x 
+git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x
 ```
 
 We can then build the `cyclonedds` package.
@@ -186,6 +186,6 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterfac
 
 To use this script, simply run `source ~/ros2_rmw_setup.sh`.
 
-After this, the correct version of CycloneDDS should be running and configured, and you should be communicating with the Go2 ROS2 instance. Again, this can be verified using `ros2 topic list`. 
+After this, the correct version of CycloneDDS should be running and configured, and you should be communicating with the Go2 ROS2 instance. Again, this can be verified using `ros2 topic list`.
 
 _This document was written by Toby Godfrey (t.godfrey \~at\~ soton.ac.uk, @tgodfrey0 on GitHub)_

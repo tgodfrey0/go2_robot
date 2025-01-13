@@ -1,6 +1,9 @@
 #!/bin/bash
 
-CONTAINER_NAME="ros2_foxy_go2"
+ROS_DISTRO=$1
+shift
+
+CONTAINER_NAME="ros2_${ROS_DISTRO}_go2"
 
 xhost +local:root
 XAUTH=$HOME/.Xauthority
@@ -17,7 +20,7 @@ if [ ! "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
                --network="host" \
                --privileged \
                -w /home/$(whoami) \
-               ros2:foxy-go2
+               ros2:${ROS_DISTRO}-go2
 else
     if [ ! "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
         echo "Container is not running! Starting..."
