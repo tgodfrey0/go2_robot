@@ -1,11 +1,19 @@
+########################################
+# Build arguments #
+########################################
 ARG ROS_DISTRO=foxy
-ARG DEBIAN_FRONTEND=noninteractive
-ARG INTERFACE
+
 
 ########################################
 # Base image #
 ########################################
 FROM osrf/ros:${ROS_DISTRO}-desktop AS base
+
+########################################
+# Other arguments #
+########################################
+ARG DEBIAN_FRONTEND=noninteractive
+ARG INTERFACE
 
 ########################################
 # Environment variables #
@@ -14,9 +22,7 @@ ENV ROS_DISTRO=${ROS_DISTRO}
 ENV ROS_VERSION=2
 ENV ROS_PYTHON_VERSION=3
 ENV ROS_PACKAGE_PATH=/opt/ros/${ROS_DISTRO}/share
-ENV DISPLAY="unix:0"
-ENV CYCLONEDDS_INTERFACE=${INTERFACE}
-
+RUN echo "INTERFACE is set to: ${INTERFACE}"
 ########################################
 # Set the shell #
 ########################################
@@ -50,7 +56,18 @@ RUN apt-get install -y \
   nano \
   ninja-build \
   tmux \
-  xclip
+  git \
+  xclip \
+  xsel \
+  x11-apps \
+  xauth
+
+########################################
+# Setup for X11 forwarding #
+########################################
+RUN mkdir -p /root/.ssh
+RUN chmod 700 /root/.ssh
+RUN touch /root/.Xauthority
 
 ########################################
 # Setup CycloneDDS file #
@@ -71,6 +88,7 @@ RUN colcon build --packages-select cyclonedds \
 
 WORKDIR /
 COPY _ros2_rmw_setup.sh /ros2_rmw_setup.sh
+RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_rmw_setup.sh
 RUN chmod +x /ros2_rmw_setup.sh
 # RUN echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
 

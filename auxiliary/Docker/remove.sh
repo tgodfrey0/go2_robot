@@ -18,14 +18,19 @@ is_podman() {
 
 # Set the build command based on whether it's Docker or Podman
 if is_podman; then
-    build_command="podman build --format docker"
+    cmd="podman"
 else
-    build_command="docker build"
+    cmd="docker"
 fi
 
-# Execute the build command with appropriate arguments
-if [ -z "$2" ]; then
-    $build_command --squash --build-arg INTERFACE=$1 --env DISPLAY=$DISPLAY -t ros2:foxy-go2 -f Dockerfile .
-else
-    $build_command --squash --build-arg INTERFACE=$1 --build-arg ROS_DISTRO=$2 --env DISPLAY=$DISPLAY -t ros2:foxy-go2 -f Dockerfile .
+# Remove the container associated with the ROS distribution, if it exists
+$cmd rm -f ros2_foxy_go2 2>/dev/null
+
+# Remove the image associated with the ROS distribution, if it exists
+$cmd rmi -f localhost/ros2:foxy-go2 2>/dev/null
+
+# Clean up dangling images (images not tagged and not referenced by any container)
+dangling_images=$($cmd images -f "dangling=true" -q)
+if [ ! -z "$dangling_images" ]; then
+    $cmd rmi -f $dangling_images  # Force remove dangling images
 fi
