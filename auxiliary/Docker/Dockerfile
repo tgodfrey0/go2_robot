@@ -1,8 +1,7 @@
 ########################################
-# Build arguments #
+# Distro argument #
 ########################################
 ARG ROS_DISTRO
-
 
 ########################################
 # Base image #
@@ -23,6 +22,7 @@ ENV ROS_VERSION=2
 ENV ROS_PYTHON_VERSION=3
 ENV ROS_PACKAGE_PATH=/opt/ros/${ROS_DISTRO}/share
 RUN echo "INTERFACE is set to: ${INTERFACE}"
+
 ########################################
 # Set the shell #
 ########################################
