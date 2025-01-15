@@ -173,7 +173,7 @@ colcon build
 
 Now we can create a setup file which we can use to source the ROS2 installation and set the correct environment variables.
 
-Create the file `~/ros2_rmw_setup.sh` with the following content. Replace `INTERFACE` with the correct network interface.
+Create the file `~/ros2_setup.sh` with the following content. Replace `INTERFACE` with the correct network interface.
 
 ```bash
 #!/bin/bash
@@ -184,7 +184,7 @@ export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterface name="INTERFACE" priority="default" multicast="default" /></Interfaces></General></Domain></CycloneDDS>'
 ```
 
-To use this script, simply run `source ~/ros2_rmw_setup.sh`.
+To use this script, simply run `source ~/ros2_setup.sh`.
 
 After this, the correct version of CycloneDDS should be running and configured, and you should be communicating with the Go2 ROS2 instance. Again, this can be verified using `ros2 topic list`.
 

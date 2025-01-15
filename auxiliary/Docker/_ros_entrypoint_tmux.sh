@@ -2,13 +2,14 @@
 set -e
 
 # Source ROS setup
-source "/opt/ros/${ROS_DISTRO}/setup.bash"
+# source "/opt/ros/${ROS_DISTRO}/setup.bash"
+# source /ros2_setup.sh
 
 # Source custom setup script only if it hasn't been sourced before
-if ! grep -q "source /ros2_rmw_setup.sh" /root/.bashrc; then
-    source /ros2_rmw_setup.sh
-    # echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
-fi
+# if ! grep -q "source /ros2_setup.sh" /root/.bashrc; then
+#     source /ros2_setup.sh
+#     # echo "source /ros2_setup.sh" >> /root/.bashrc
+# fi
 
 # Function to create or attach to tmux session
 start_or_attach_tmux() {

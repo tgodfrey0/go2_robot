@@ -87,10 +87,10 @@ RUN colcon build --packages-select cyclonedds \
   && colcon build
 
 WORKDIR /
-COPY _ros2_rmw_setup.sh /ros2_rmw_setup.sh
-RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_rmw_setup.sh
-RUN chmod +x /ros2_rmw_setup.sh
-# RUN echo "source /ros2_rmw_setup.sh" >> /root/.bashrc
+COPY _ros2_setup.sh /ros2_setup.sh
+RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_setup.sh
+RUN chmod +x /ros2_setup.sh
+# RUN echo "source /ros2_setup.sh" >> /root/.bashrc
 
 ########################################
 # Setup Go2 repos #
@@ -118,6 +118,11 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.bash \
 # Copy tmux configuration #
 ########################################
 COPY tmux.conf /root/.tmux.conf
+
+########################################
+# Add to .bashrc #
+########################################
+RUN echo "source /ros2_setup.sh" >> /root/.bashrc
 
 ########################################
 # Set entrypoint and default command #
