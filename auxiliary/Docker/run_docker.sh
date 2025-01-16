@@ -18,8 +18,6 @@ if [ ! "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
                -v /tmp/.X11-unix:/tmp/.X11-unix \
                -v $HOME/.Xauthority:/root/.Xauthority \
                --network="host" \
-               --ipc="host" \
-               --pid="host" \
                --privileged \
                -w /home/$(whoami) \
                --ulimit nofile=1024:65536 \
