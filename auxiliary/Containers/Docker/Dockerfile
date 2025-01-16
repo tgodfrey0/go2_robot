@@ -129,5 +129,3 @@ RUN chmod +x /ros_entrypoint_tmux.sh
 # Set the entrypoint
 ENTRYPOINT ["/ros_entrypoint_tmux.sh"]
 
-# ENTRYPOINT [ "/ros_entrypoint.sh" ]
-# CMD [ "bash" ]
