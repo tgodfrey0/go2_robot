@@ -31,9 +31,9 @@ RUN echo "INTERFACE is set to: ${INTERFACE}"
 ########################################
 # Install packages #
 ########################################
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install -y \
+RUN apt-get update -y && \
+  apt-get upgrade -y && \
+  apt-get install -y \
   ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
   ros-${ROS_DISTRO}-realsense2-camera \
   ros-${ROS_DISTRO}-rosidl-generator-dds-idl \
@@ -65,55 +65,55 @@ RUN apt-get install -y \
 ########################################
 # Setup for X11 forwarding #
 ########################################
-RUN mkdir -p /root/.ssh
-RUN chmod 700 /root/.ssh
-RUN touch /root/.Xauthority
+RUN mkdir -p /root/.ssh && \
+  chmod 700 /root/.ssh && \
+  touch /root/.Xauthority
 
 ########################################
 # Setup CycloneDDS file #
 ########################################
 WORKDIR /
-RUN git clone https://github.com/unitreerobotics/unitree_ros2
-RUN mv unitree_ros2/cyclonedds_ws /
-RUN rm -rf /unitree_ros2
+RUN git clone https://github.com/unitreerobotics/unitree_ros2 && \
+  mv unitree_ros2/cyclonedds_ws / && \
+  rm -rf /unitree_ros2
 
 WORKDIR /cyclonedds_ws/src
-RUN git clone https://github.com/ros2/rmw_cyclonedds -b ${ROS_DISTRO}
-RUN git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x
+RUN git clone https://github.com/ros2/rmw_cyclonedds -b ${ROS_DISTRO} && \
+  git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x
 
 WORKDIR /cyclonedds_ws
-RUN rosdep update \
-  && rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros \
-  && colcon build --packages-select cyclonedds \
-  && . /opt/ros/${ROS_DISTRO}/setup.bash \
-  && colcon build
+RUN rosdep update && \
+  rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros && \
+  colcon build --packages-select cyclonedds && \
+  . /opt/ros/${ROS_DISTRO}/setup.bash && \
+  colcon build
 
 WORKDIR /
-COPY _ros2_setup.sh /ros2_setup.sh
-RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_setup.sh
-RUN chmod +x /ros2_setup.sh
-RUN echo "source /ros2_setup.sh" >> /root/.bashrc
+COPY /_ros2_setup.sh /ros2_setup.sh
+RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_setup.sh && \
+  chmod +x /ros2_setup.sh && \
+  echo "source /ros2_setup.sh" >> /root/.bashrc
 
 ########################################
 # Setup Go2 repos #
 ########################################
 RUN mkdir -p /go2_ws/src
 WORKDIR /go2_ws/src
-RUN git clone https://github.com/tgodfrey0/go2_robot.git
-RUN git clone https://github.com/nlohmann/json.git
-RUN git clone --recurse-submodules https://github.com/HesaiTechnology/HesaiLidar_ROS_2.0.git
-RUN mv json/include/nlohmann go2_robot/go2_driver/include/
-RUN rm -rf json
+RUN git clone https://github.com/tgodfrey0/go2_robot.git && \
+  git clone https://github.com/nlohmann/json.git && \
+  git clone --recurse-submodules https://github.com/HesaiTechnology/HesaiLidar_ROS_2.0.git && \
+  mv json/include/nlohmann go2_robot/go2_driver/include/ && \
+  rm -rf json
 
 ########################################
 # Build packages #
 ########################################
 WORKDIR /go2_ws
-RUN . /opt/ros/${ROS_DISTRO}/setup.bash \
-  && rosdep update \
-  && rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros \
-  && colcon build --symlink-install \
-  && . install/setup.bash
+RUN . /opt/ros/${ROS_DISTRO}/setup.bash && \
+  rosdep update && \
+  rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros && \
+  colcon build --symlink-install && \
+  . install/setup.bash
 
 ########################################
 # Copy tmux configuration #
@@ -123,7 +123,7 @@ COPY tmux.conf /root/.tmux.conf
 ########################################
 # Set entrypoint and default command #
 ########################################
-COPY _ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
+COPY /_ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
 RUN chmod +x /ros_entrypoint_tmux.sh
 
 # Set the entrypoint

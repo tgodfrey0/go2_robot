@@ -1,12 +1,16 @@
 ########################################
+# Distro argument #
+########################################
+ARG ROS_DISTRO
+
+########################################
 # Base image #
 ########################################
-FROM ubuntu:20.04 AS base
+FROM osrf/ros:${ROS_DISTRO}-desktop AS base
 
 ########################################
 # Other arguments #
 ########################################
-ARG ROS_DISTRO
 ARG DEBIAN_FRONTEND=noninteractive
 ARG INTERFACE
 
@@ -14,40 +18,6 @@ ARG INTERFACE
 # Set the shell #
 ########################################
 SHELL ["/bin/bash", "-c"]
-
-########################################
-# Install ROS2 #
-########################################
-# Update package lists and install necessary tools
-RUN apt-get update -y \
-  && apt-get upgrade -y \
-  && apt-get install -y curl gnupg2 lsb-release locales \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 \
-  && apt-get clean
-
-RUN apt-get install -y software-properties-common \
-  && add-apt-repository universe
-
-# Add the ROS 2 GPG key
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-
-# Add the ROS 2 repository to the sources list
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-
-# Update package lists again after adding the ROS repository
-RUN apt-get update -y \
-  && apt-get upgrade -y
-RUN apt-get install -y \
-  ros-${ROS_DISTRO}-desktop \
-  ros-dev-tools \
-  python3-argcomplete \
-  python3-rosdep \
-  python3-colcon-common-extensions
-
-# Initialize rosdep
-RUN rosdep init \
-  && rosdep update
 
 ########################################
 # Environment variables #
@@ -61,6 +31,8 @@ RUN echo "INTERFACE is set to: ${INTERFACE}"
 ########################################
 # Install packages #
 ########################################
+RUN apt-get update -y
+RUN apt-get upgrade -y
 RUN apt-get install -y \
   ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
   ros-${ROS_DISTRO}-realsense2-camera \
@@ -117,7 +89,7 @@ RUN rosdep update \
   && colcon build
 
 WORKDIR /
-COPY _ros2_setup.sh /ros2_setup.sh
+COPY /_ros2_setup.sh /ros2_setup.sh
 RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_setup.sh
 RUN chmod +x /ros2_setup.sh
 RUN echo "source /ros2_setup.sh" >> /root/.bashrc
@@ -151,7 +123,7 @@ COPY tmux.conf /root/.tmux.conf
 ########################################
 # Set entrypoint and default command #
 ########################################
-COPY _ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
+COPY /_ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
 RUN chmod +x /ros_entrypoint_tmux.sh
 
 # Set the entrypoint

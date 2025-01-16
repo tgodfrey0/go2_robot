@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check if ROS_DISTRO argument is provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <ROS_DISTRO>"
+    exit 1
+fi
+
 ROS_DISTRO=$1
 shift
 
