@@ -89,7 +89,7 @@ RUN rosdep update && \
   colcon build
 
 WORKDIR /
-COPY /_ros2_setup.sh /ros2_setup.sh
+COPY _ros2_setup.sh /ros2_setup.sh
 RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_setup.sh && \
   chmod +x /ros2_setup.sh && \
   echo "source /ros2_setup.sh" >> /root/.bashrc
@@ -123,7 +123,7 @@ COPY tmux.conf /root/.tmux.conf
 ########################################
 # Set entrypoint and default command #
 ########################################
-COPY /_ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
+COPY _ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
 RUN chmod +x /ros_entrypoint_tmux.sh
 
 # Set the entrypoint
