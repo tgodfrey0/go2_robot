@@ -82,10 +82,10 @@ RUN git clone https://github.com/ros2/rmw_cyclonedds -b ${ROS_DISTRO} && \
   git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x
 
 WORKDIR /cyclonedds_ws
-RUN rosdep update && \
-  rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros && \
-  colcon build --packages-select cyclonedds && \
-  . /opt/ros/${ROS_DISTRO}/setup.bash && \
+# RUN rosdep update -v
+RUN rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros
+RUN colcon build --packages-select cyclonedds
+RUN  . /opt/ros/${ROS_DISTRO}/setup.bash && \
   colcon build
 
 WORKDIR /
@@ -110,7 +110,6 @@ RUN git clone https://github.com/tgodfrey0/go2_robot.git && \
 ########################################
 WORKDIR /go2_ws
 RUN . /opt/ros/${ROS_DISTRO}/setup.bash && \
-  rosdep update && \
   rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros && \
   colcon build --symlink-install && \
   . install/setup.bash
@@ -128,4 +127,3 @@ RUN chmod +x /ros_entrypoint_tmux.sh
 
 # Set the entrypoint
 ENTRYPOINT ["/ros_entrypoint_tmux.sh"]
-
