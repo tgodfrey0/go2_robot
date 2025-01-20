@@ -7,7 +7,6 @@ if [ "$#" -ne 1 ]; then
 fi
 
 ROS_DISTRO=$1
-shift
 
 # Remove the container associated with the ROS distribution, if it exists
 podman rm -f ros2_${ROS_DISTRO}_go2 2>/dev/null
