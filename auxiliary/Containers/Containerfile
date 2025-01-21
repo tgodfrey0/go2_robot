@@ -82,17 +82,18 @@ RUN git clone https://github.com/ros2/rmw_cyclonedds -b ${ROS_DISTRO}
 RUN git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x
 
 WORKDIR /cyclonedds_ws
-RUN rosdep update \
-  && rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros \
-  && colcon build --packages-select cyclonedds \
-  && . /opt/ros/${ROS_DISTRO}/setup.bash \
-  && colcon build
+RUN rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros
+RUN colcon build --packages-select cyclonedds
+RUN  . /opt/ros/${ROS_DISTRO}/setup.bash && \
+  colcon build
 
 WORKDIR /
-COPY /_ros2_setup.sh /ros2_setup.sh
+COPY _ros2_setup.sh /ros2_setup.sh
+COPY _cyclonedds.xml /cyclonedds.xml
 RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_setup.sh
+RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /cyclonedds.xml
 RUN chmod +x /ros2_setup.sh
-RUN echo "source /ros2_setup.sh" >> /root/.bashrc
+# RUN echo "source /ros2_setup.sh" >> /root/.bashrc
 
 ########################################
 # Setup Go2 repos #
@@ -109,11 +110,10 @@ RUN rm -rf json
 # Build packages #
 ########################################
 WORKDIR /go2_ws
-RUN . /opt/ros/${ROS_DISTRO}/setup.bash \
-  && rosdep update \
-  && rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros \
-  && colcon build --symlink-install \
-  && . install/setup.bash
+RUN . /opt/ros/${ROS_DISTRO}/setup.bash && \
+  rosdep install --from-paths src --ignore-src -r -y --rosdistro ${ROS_DISTRO} --include-eol-distros && \
+  colcon build --symlink-install && \
+  . install/setup.bash
 
 ########################################
 # Copy tmux configuration #
@@ -123,9 +123,8 @@ COPY tmux.conf /root/.tmux.conf
 ########################################
 # Set entrypoint and default command #
 ########################################
-COPY /_ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
+COPY _ros_entrypoint_tmux.sh /ros_entrypoint_tmux.sh
 RUN chmod +x /ros_entrypoint_tmux.sh
 
 # Set the entrypoint
 ENTRYPOINT ["/ros_entrypoint_tmux.sh"]
-

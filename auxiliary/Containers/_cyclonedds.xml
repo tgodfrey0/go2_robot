@@ -1,0 +1,14 @@
+<CycloneDDS>
+  <Domain>
+    <General>
+      <Interfaces>
+        <AllowMulticast>false</AllowMulticast>
+        <NetworkInterface
+          name="{CYCLONEDDS_INTERFACE}"
+          priority="default"
+          multicast="default"
+        />
+      </Interfaces>
+    </General>
+  </Domain>
+</CycloneDDS>
