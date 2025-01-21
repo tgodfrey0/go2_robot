@@ -8,7 +8,7 @@
           multicast="default"
         />
       </Interfaces>
-      <AllowMulticast>false</AllowMulticast>
+      <AllowMulticast>spdp</AllowMulticast>
     </General>
   </Domain>
 </CycloneDDS>
