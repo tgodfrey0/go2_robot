@@ -70,7 +70,7 @@ RUN chmod 700 /root/.ssh
 RUN touch /root/.Xauthority
 
 ########################################
-# Setup CycloneDDS file #
+# Setup CycloneDDS #
 ########################################
 WORKDIR /
 RUN git clone https://github.com/unitreerobotics/unitree_ros2
@@ -93,7 +93,7 @@ COPY _cyclonedds.xml /cyclonedds.xml
 RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /ros2_setup.sh
 RUN sed -i "s/{CYCLONEDDS_INTERFACE}/${INTERFACE}/g" /cyclonedds.xml
 RUN chmod +x /ros2_setup.sh
-# RUN echo "source /ros2_setup.sh" >> /root/.bashrc
+RUN echo "source /ros2_setup.sh" >> /root/.bashrc
 
 ########################################
 # Setup Go2 repos #
