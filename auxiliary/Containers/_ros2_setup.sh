@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "This image was build for the interface {CYCLONEDDS_INTERFACE}"
+echo "This image was built for the interface {CYCLONEDDS_INTERFACE}"
 source /opt/ros/${ROS_DISTRO}/setup.bash # This gets sourced automatically somewhere else
 source /cyclonedds_ws/install/setup.bash # This causes the hanging
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
