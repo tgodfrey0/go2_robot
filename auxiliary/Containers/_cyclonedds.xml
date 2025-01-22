@@ -10,5 +10,9 @@
       </Interfaces>
       <AllowMulticast>spdp</AllowMulticast>
     </General>
+    <Compatibility>
+      <StandardsConformance>lax</StandardsConformance>
+      <ExplicitlyPublishQosSetToDefault>true</ExplicitlyPublishQosSetToDefault>
+    </Compatibility>
   </Domain>
 </CycloneDDS>
